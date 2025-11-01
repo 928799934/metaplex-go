@@ -307,7 +307,6 @@ func (inst *Instruction) Data() ([]byte, error) {
 	if err := ag_binary.NewBorshEncoder(buf).Encode(inst); err != nil {
 		return nil, fmt.Errorf("unable to encode instruction: %w", err)
 	}
-	fmt.Println("data", buf.Bytes())
 	return buf.Bytes(), nil
 }
 
