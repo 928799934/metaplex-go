@@ -6,9 +6,9 @@ import (
 	"fmt"
 	"os"
 
+	nftCandyMachine "github.com/928799934/metaplex-go/clients/nft-candy-machine"
 	"github.com/davecgh/go-spew/spew"
 	bin "github.com/gagliardetto/binary"
-	nftCandyMachine "github.com/gagliardetto/metaplex-go/clients/nft-candy-machine"
 	"github.com/gagliardetto/solana-go"
 	atok "github.com/gagliardetto/solana-go/programs/associated-token-account"
 	"github.com/gagliardetto/solana-go/programs/system"
