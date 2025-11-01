@@ -3,6 +3,8 @@
 package token_metadata
 
 import (
+	"fmt"
+
 	ag_binary "github.com/gagliardetto/binary"
 	ag_solanago "github.com/gagliardetto/solana-go"
 )
@@ -539,6 +541,154 @@ func (obj *MintNewEditionFromMasterEditionViaTokenArgs) UnmarshalWithDecoder(dec
 	err = decoder.Decode(&obj.Edition)
 	if err != nil {
 		return err
+	}
+	return nil
+}
+
+// ----
+
+type CollectionDetailsEnum byte
+
+const (
+	V1Discriminant CollectionDetailsEnum = 0
+	V2Discriminant CollectionDetailsEnum = 1
+)
+
+// V1 variant
+type CollectionV1 struct {
+	Size uint64
+}
+
+// V2 variant
+type CollectionV2 struct {
+	Padding [8]byte
+}
+
+// CollectionDetails enum
+type CollectionDetails struct {
+	Discriminant CollectionDetailsEnum
+	V1           *CollectionV1
+	V2           *CollectionV2
+}
+
+func (obj CollectionDetails) MarshalWithEncoder(encoder *ag_binary.Encoder) (err error) {
+	// Serialize `Data` param:
+	err = encoder.Encode(obj.Discriminant)
+	if err != nil {
+		return err
+	}
+
+	switch obj.Discriminant {
+	case V1Discriminant:
+		if obj.V1 == nil {
+			return fmt.Errorf("V1 data is nil")
+		}
+		if err := encoder.Encode(obj.V1.Size); err != nil {
+			return err
+		}
+	case V2Discriminant:
+		if obj.V2 == nil {
+			return fmt.Errorf("V2 data is nil")
+		}
+		if err := encoder.Encode(obj.V2.Padding); err != nil {
+			return err
+		}
+	default:
+		return fmt.Errorf("unknown discriminant")
+	}
+	return nil
+}
+
+func (obj *CollectionDetails) UnmarshalWithDecoder(decoder *ag_binary.Decoder) (err error) {
+	// Deserialize `Data`:
+	err = decoder.Decode(&obj.Discriminant)
+	if err != nil {
+		return err
+	}
+
+	switch obj.Discriminant {
+	case V1Discriminant:
+		var size uint64
+		if err := decoder.Decode(&size); err != nil {
+			return err
+		}
+		obj.V1 = &CollectionV1{Size: size}
+	case V2Discriminant:
+		var padding [8]byte
+		if err := decoder.Decode(&padding); err != nil {
+			return err
+		}
+		obj.V2 = &CollectionV2{Padding: padding}
+	default:
+		return fmt.Errorf("unknown discriminant")
+	}
+
+	return nil
+}
+
+type CreateMetadataAccountArgsV3 struct {
+	// Discriminator uint8
+
+	// Note that unique metadatas are disabled for now.
+	Data DataV2
+
+	// Whether you want your metadata to be updateable in the future.
+	IsMutable bool
+
+	CollectionDetails *CollectionDetails
+}
+
+func (obj CreateMetadataAccountArgsV3) MarshalWithEncoder(encoder *ag_binary.Encoder) (err error) {
+	// Serialize `Data` param:
+	err = encoder.Encode(obj.Data)
+	if err != nil {
+		return err
+	}
+	// Serialize `IsMutable` param:
+	err = encoder.Encode(obj.IsMutable)
+	if err != nil {
+		return err
+	}
+
+	if obj.CollectionDetails == nil {
+		err = encoder.WriteBool(false)
+		if err != nil {
+			return err
+		}
+	} else {
+		err = encoder.WriteBool(true)
+		if err != nil {
+			return err
+		}
+		err = encoder.Encode(obj.CollectionDetails)
+		if err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+func (obj *CreateMetadataAccountArgsV3) UnmarshalWithDecoder(decoder *ag_binary.Decoder) (err error) {
+	// Deserialize `Data`:
+	err = decoder.Decode(&obj.Data)
+	if err != nil {
+		return err
+	}
+	// Deserialize `IsMutable`:
+	err = decoder.Decode(&obj.IsMutable)
+	if err != nil {
+		return err
+	}
+
+	ok, err := decoder.ReadBool()
+	if err != nil {
+		return err
+	}
+	if ok {
+		err = decoder.Decode(&obj.CollectionDetails)
+		if err != nil {
+			return err
+		}
 	}
 	return nil
 }

@@ -8,6 +8,7 @@ package token_metadata
 import (
 	"bytes"
 	"fmt"
+
 	ag_spew "github.com/davecgh/go-spew/spew"
 	ag_binary "github.com/gagliardetto/binary"
 	ag_solanago "github.com/gagliardetto/solana-go"
@@ -135,6 +136,8 @@ const (
 	Instruction_RevokeCollectionAuthority
 )
 
+const Instruction_CreateMetadataAccountV3 uint8 = iota + 33
+
 // InstructionIDToName returns the name of the instruction given its ID.
 func InstructionIDToName(id uint8) string {
 	switch id {
@@ -188,6 +191,8 @@ func InstructionIDToName(id uint8) string {
 		return "ApproveCollectionAuthority"
 	case Instruction_RevokeCollectionAuthority:
 		return "RevokeCollectionAuthority"
+	case Instruction_CreateMetadataAccountV3:
+		return "CreateMetadataAccountV3"
 	default:
 		return ""
 	}
@@ -283,6 +288,9 @@ var InstructionImplDef = ag_binary.NewVariantDefinition(
 		{
 			"RevokeCollectionAuthority", (*RevokeCollectionAuthority)(nil),
 		},
+		{
+			"CreateMetadataAccountV3", (*CreateMetadataAccountV3)(nil),
+		},
 	},
 )
 
@@ -299,6 +307,7 @@ func (inst *Instruction) Data() ([]byte, error) {
 	if err := ag_binary.NewBorshEncoder(buf).Encode(inst); err != nil {
 		return nil, fmt.Errorf("unable to encode instruction: %w", err)
 	}
+	fmt.Println("data", buf.Bytes())
 	return buf.Bytes(), nil
 }
 
