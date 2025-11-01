@@ -3,9 +3,7 @@
 package token_metadata
 
 import (
-	"bytes"
 	"errors"
-	"fmt"
 
 	ag_binary "github.com/gagliardetto/binary"
 	ag_solanago "github.com/gagliardetto/solana-go"
@@ -225,24 +223,6 @@ func (inst *CreateMetadataAccountV3) EncodeToTree(parent ag_treeout.Branches) {
 }
 
 func (obj CreateMetadataAccountV3) MarshalWithEncoder(encoder *ag_binary.Encoder) (err error) {
-
-	fmt.Println("CreateMetadataAccountV3.MarshalWithEncoder")
-
-	// discriminator := uint8(33)
-	// err = encoder.Encode(&discriminator)
-	// if err != nil {
-	// 	return err
-	// }
-	// obj.Args.Discriminator = 33
-
-	buf__ := new(bytes.Buffer)
-	enc__ := ag_binary.NewBorshEncoder(buf__)
-	enc__.Encode(obj.Args)
-
-	// // Encode the instruction discriminator.
-	// enc__.WriteUint8(obj.Args.Discriminator)
-	fmt.Println(buf__.Bytes())
-
 	// Serialize `Args` param:
 	err = encoder.Encode(obj.Args)
 	if err != nil {
@@ -251,7 +231,6 @@ func (obj CreateMetadataAccountV3) MarshalWithEncoder(encoder *ag_binary.Encoder
 	return nil
 }
 func (obj *CreateMetadataAccountV3) UnmarshalWithDecoder(decoder *ag_binary.Decoder) (err error) {
-	fmt.Println("aaaa")
 	// Deserialize `Args`:
 	err = decoder.Decode(&obj.Args)
 	if err != nil {
