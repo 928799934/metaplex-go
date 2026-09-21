@@ -9,15 +9,15 @@ import (
 	nftCandyMachine "github.com/928799934/metaplex-go/clients/nft-candy-machine"
 	"github.com/davecgh/go-spew/spew"
 	bin "github.com/gagliardetto/binary"
-	"github.com/gagliardetto/solana-go"
-	atok "github.com/gagliardetto/solana-go/programs/associated-token-account"
-	"github.com/gagliardetto/solana-go/programs/system"
-	"github.com/gagliardetto/solana-go/programs/token"
-	"github.com/gagliardetto/solana-go/rpc"
-	sendAndConfirmTransaction "github.com/gagliardetto/solana-go/rpc/sendAndConfirmTransaction"
-	"github.com/gagliardetto/solana-go/rpc/ws"
-	"github.com/gagliardetto/solana-go/text"
 	. "github.com/gagliardetto/utilz"
+	"github.com/solana-foundation/solana-go/v2"
+	atok "github.com/solana-foundation/solana-go/v2/programs/associated-token-account"
+	"github.com/solana-foundation/solana-go/v2/programs/system"
+	"github.com/solana-foundation/solana-go/v2/programs/token"
+	"github.com/solana-foundation/solana-go/v2/rpc"
+	sendAndConfirmTransaction "github.com/solana-foundation/solana-go/v2/rpc/sendAndConfirmTransaction"
+	"github.com/solana-foundation/solana-go/v2/rpc/ws"
+	"github.com/solana-foundation/solana-go/v2/text"
 )
 
 var myWallet solana.PrivateKey
@@ -439,7 +439,7 @@ func sendTx(
 	instructions []solana.Instruction,
 	signers []solana.PrivateKey,
 ) {
-	recent, err := rpcClient.GetRecentBlockhash(context.Background(), rpc.CommitmentFinalized)
+	recent, err := rpcClient.GetLatestBlockhash(context.Background(), rpc.CommitmentFinalized)
 	if err != nil {
 		panic(err)
 	}

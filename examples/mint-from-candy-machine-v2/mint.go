@@ -8,13 +8,13 @@ import (
 	token_metadata "github.com/928799934/metaplex-go/clients/token-metadata"
 	"github.com/davecgh/go-spew/spew"
 	bin "github.com/gagliardetto/binary"
-	"github.com/gagliardetto/solana-go"
-	atok "github.com/gagliardetto/solana-go/programs/associated-token-account"
-	"github.com/gagliardetto/solana-go/programs/system"
-	"github.com/gagliardetto/solana-go/programs/token"
-	"github.com/gagliardetto/solana-go/rpc"
-	sendAndConfirmTransaction "github.com/gagliardetto/solana-go/rpc/sendAndConfirmTransaction"
-	"github.com/gagliardetto/solana-go/rpc/ws"
+	"github.com/solana-foundation/solana-go/v2"
+	atok "github.com/solana-foundation/solana-go/v2/programs/associated-token-account"
+	"github.com/solana-foundation/solana-go/v2/programs/system"
+	"github.com/solana-foundation/solana-go/v2/programs/token"
+	"github.com/solana-foundation/solana-go/v2/rpc"
+	sendAndConfirmTransaction "github.com/solana-foundation/solana-go/v2/rpc/sendAndConfirmTransaction"
+	"github.com/solana-foundation/solana-go/v2/rpc/ws"
 )
 
 var candyMachineV2ProgramID = solana.MustPublicKeyFromBase58("cndyAnrLdpjq1Ssp1z8xxDsB8dxe7u4HL5Nxi2K5WXZ")
@@ -155,7 +155,7 @@ func sendTransaction(
 	signers []solana.PrivateKey,
 ) (solana.Signature, error) {
 
-	recent, err := client.GetRecentBlockhash(context.TODO(), rpc.CommitmentFinalized)
+	recent, err := client.GetLatestBlockhash(context.TODO(), rpc.CommitmentFinalized)
 	if err != nil {
 		return solana.Signature{}, err
 	}
